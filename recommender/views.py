@@ -27,23 +27,32 @@ def get_association_rules_for(request, content_id, take=6):
 
 
 def recs_using_association_rules(request, user_id, take=6):
+    # Fetch distinct content_ids from the Log model for the given user_id
     events = Log.objects.filter(user_id=user_id)\
                         .order_by('created')\
                         .values_list('content_id', flat=True)\
                         .distinct()
+    
+    print(f"Events for user {user_id}: {list(events)}")
 
+    # Take the first 20 unique content_ids as seeds
     seeds = set(events[:20])
+    print(f"Seeds: {seeds}")
 
+    # Fetch association rules for the seeds, excluding the seeds themselves
     rules = SeededRecs.objects.filter(source__in=seeds) \
         .exclude(target__in=seeds) \
         .values('target') \
         .annotate(confidence=Avg('confidence')) \
         .order_by('-confidence')
+    
+    print(f"Rules: {list(rules)}")
 
+    # Prepare the recommendations
     recs = [{'id': '{0:07d}'.format(int(rule['target'])),
              'confidence': rule['confidence']} for rule in rules]
 
-    print("recs from association rules: \n{}".format(recs[:take]))
+    print(f"Recommendations: {recs[:take]}")
     return JsonResponse(dict(data=list(recs[:take])))
 
 
