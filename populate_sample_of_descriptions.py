@@ -10,19 +10,19 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'prs_project.settings')
 django.setup()
 
 from recommender.models import MovieDescriptions
-NUMBER_OF_PAGES = 15760
-start_date = "1970-01-01"
+NUMBER_OF_PAGES = 15
+start_year = "1970"
 
 
 def get_descriptions():
 
-    url = """https://api.themoviedb.org/3/discover/movie?primary_release_date.gte={}&api_key={}&page={}"""
+    url = """http://www.omdbapi.com/?y={}&apikey={}&page={}"""
     api_key = get_api_key()
 
     #MovieDescriptions.objects.all().delete()
 
     for page in range(1, NUMBER_OF_PAGES):
-        formated_url = url.format(start_date, api_key, page)
+        formated_url = url.format(start_year, api_key, page)
         print(formated_url)
         r = requests.get(formated_url)
         for film in r.json()['results']:
@@ -42,8 +42,7 @@ def get_descriptions():
 
 
 def save_as_csv():
-    url = """https://api.themoviedb.org/3/discover/movie?primary_release_date.gte=2016-01-01
-    &primary_release_date.lte=2016-10-22&api_key={}&page={}"""
+    url = """http://www.omdbapi.com/?y=2024&apikey={}&page={}"""
     api_key = get_api_key()
 
     file = open('data.json','w')
@@ -68,33 +67,34 @@ def save_as_csv():
 
 
 def get_imdb_id(moviedb_id):
-    url = """https://api.themoviedb.org/3/movie/{}?api_key={}"""
-
-    r = requests.get(url.format(moviedb_id, get_api_key()))
-
-    json = r.json()
-    print(json)
-    if 'imdb_id' not in json:
-        return ''
-    imdb_id = json['imdb_id']
-    if imdb_id is not None:
-        print(imdb_id)
-        return imdb_id[2:]
-    else:
-        return ''
+    return "tt" + moviedb_id
+    # url = """http://www.omdbapi.com/?i={}&apikey={}"""
+    #
+    # r = requests.get(url.format(moviedb_id, get_api_key()))
+    #
+    # json = r.json()
+    # print(json)
+    # if 'imdb_id' not in json:
+    #     return ''
+    # imdb_id = json['imdb_id']
+    # if imdb_id is not None:
+    #     print(imdb_id)
+    #     return imdb_id[2:]
+    # else:
+    #     return ''
 
 
 def get_api_key():
     # Load credentials
     cred = json.loads(open(".prs").read())
-    return cred['themoviedb_apikey']
+    return cred['omdb_apikey']
 
 
 def get_popular_films_for_genre(genre_str):
     film_genres = {'drama': 18, 'action': 28, 'comedy': 35}
     genre = film_genres[genre_str]
 
-    url = """https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_genres={}&api_key={}"""
+    url = """http://www.omdbapi.com/?s={}&apikey={}"""
     api_key = get_api_key()
     r = requests.get(url.format(genre, api_key))
     print(r.json())
@@ -112,3 +112,4 @@ if __name__ == '__main__':
     get_descriptions()
     # get_popular_films_for_genre('comedy')
     # save_as_csv()
+    # get_imdb_id('0133093')

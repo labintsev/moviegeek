@@ -44,6 +44,7 @@ Then you’ll see settings on the left.
 * Open .prs and add { "themoviedb_apikey": <INSERT YOUR APIKEY HERE>}
 Remember to remove the "<" and ">" When you are finished, the file contents should look something like 
 {"themoviedb_apikey": "6d88c9a24b1bc9a60b374d3fe2cd92ac"}
+* IP of themooviedb.org is `99.86.4.122`
 
 
 ## Running the site 
@@ -210,8 +211,8 @@ When the database connection is configured, you can run the following commands t
 and this website need to run.
 
 ```bash
-> python3 manage.py makemigrations
-> python3 manage.py migrate --run-syncdb
+> python manage.py makemigrations
+> python manage.py migrate --run-syncdb
 ```
 
 #### Populate the database 
@@ -223,15 +224,15 @@ WARNING: Mac users running Python 3.7 or higher, before you populate the databas
 
 Everyone, run these commands to populate the databases.
 ```bash
-> python3 populate_moviegeek.py
-> python3 populate_ratings.py
+> python populate_moviegeek.py
+> python populate_ratings.py
 ```
 WARNING: This might take some time.
 
 ### Start the web server
 To start the development server, run this command:
 ```bash
-> python3 manage.py runserver 127.0.0.1:8000
+> python manage.py runserver 127.0.0.1:8000
 ```
 Running the server like this will make the website available [http://127.0.0.1:8000](http://127.0.0.1:8000) 
 
@@ -273,5 +274,5 @@ To restart the project again do the following:
     
 Start the web server again by running the following command:
 ```bash
-> python3 manage.py runserver 127.0.0.1:8000
+> python manage.py runserver 127.0.0.1:8000
 ```
